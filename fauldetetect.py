@@ -38,6 +38,20 @@ from sklearn.preprocessing import StandardScaler
     # cnn.save("models/cnn_model.h5")
 
     # st.success("✅ Baseline models trained and saved successfully!")
+def extract_features(df):
+    df_num = df.select_dtypes(include=[np.number]).iloc[:, :6]  # only first 6 numeric cols
+    feats = []
+    for col in df_num.columns:
+        data = df_num[col].values
+        feats += [
+            np.mean(data),
+            np.std(data),
+            np.max(data),
+            np.min(data),
+            np.sqrt(np.mean(data**2)),  # RMS
+        ]
+    return np.array(feats)
+
 def train_baseline_model():
     st.warning("Models not found — training baseline models now. This will take ~10 seconds...")
 
@@ -97,19 +111,7 @@ rf_model, cnn_model, scaler = load_models()
 # ---------------------------------------------
 # Helper: extract simple features
 # ---------------------------------------------
-def extract_features(df):
-    df_num = df.select_dtypes(include=[np.number]).iloc[:, :6]  # only first 6 numeric cols
-    feats = []
-    for col in df_num.columns:
-        data = df_num[col].values
-        feats += [
-            np.mean(data),
-            np.std(data),
-            np.max(data),
-            np.min(data),
-            np.sqrt(np.mean(data**2)),  # RMS
-        ]
-    return np.array(feats)
+
 # def extract_features(df):
     # feats = []
     # for col in df.columns:
